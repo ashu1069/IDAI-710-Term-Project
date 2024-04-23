@@ -24,6 +24,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Initialize the model, loss criterion, and optimizer
 model = dehaze_net().to(device)
+
 criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)  # you can adjust the learning rate
 
@@ -45,7 +46,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
 
             # forward
             outputs = model(inputs)
-            loss = criterion(outputs, inputs)  # assuming target is the input itself
+            loss = criterion(outputs, labels) 
 
             # backward + optimize
             loss.backward()
@@ -67,7 +68,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
                 labels = labels.to(device)
 
                 outputs = model(inputs)
-                loss = criterion(outputs, inputs)  # assuming target is the input itself
+                loss = criterion(outputs, labels) 
 
                 val_running_loss += loss.item() * inputs.size(0)
 
