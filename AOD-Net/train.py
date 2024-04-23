@@ -5,10 +5,12 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from dataloader import DehazingDataset
 from nnet import dehaze_net
+from PIL import Image
 
 root_dir = '/home/stu12/s11/ak1825/idai710/Project/'
 
 transform = transforms.Compose([
+    transforms.Resize((480, 640),interpolation=Image.ANTIALIAS),
     transforms.ToTensor(),  # Converts PIL.Image (H x W x C) in the range [0, 255] to torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
     # Add additional transformations here if needed
 ])
