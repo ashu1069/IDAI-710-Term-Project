@@ -1,17 +1,19 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class DehazeNet(nn.Module):
     def __init__(self, input=16, groups=4):
         super(DehazeNet, self).__init__()
         self.input = input
         self.groups = groups
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.input, kernel_size=5)
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.input, kernel_size=5, padding=2)
         self.conv2 = nn.Conv2d(in_channels=4, out_channels=self.input, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(in_channels=4, out_channels=self.input, kernel_size=5, padding=2)
         self.conv4 = nn.Conv2d(in_channels=4, out_channels=self.input, kernel_size=7, padding=3)
-        self.maxpool = nn.MaxPool2d(kernel_size=7, stride=1)
-        self.conv5 = nn.Conv2d(in_channels=48, out_channels=1, kernel_size=6)
+        
+        self.maxpool = nn.MaxPool2d(kernel_size=7, stride=1, padding=3)
+        self.conv5 = nn.Conv2d(in_channels=48, out_channels=3, kernel_size=6, padding=2)
 
         for name, m in self.named_modules():
             if isinstance(m, nn.Conv2d):
@@ -33,6 +35,8 @@ class DehazeNet(nn.Module):
         return x
 
     def forward(self, x):
+        expected_height = x.size(2)
+        expected_width = x.size(3)
         out = self.conv1(x)
         out = self.Maxout(out, self.groups)
         out1 = self.conv2(out)
@@ -41,6 +45,11 @@ class DehazeNet(nn.Module):
         y = torch.cat((out1, out2, out3), dim=1)
         y = self.maxpool(y)
         y = self.conv5(y)
+        if y.size(2) != expected_height:
+            diff = expected_height - y.size(2)
+            y = F.pad(y, (0, 0, diff // 2, diff - diff // 2))  # Padding bottom and top
+        if y.size(3) != expected_width:
+            diff = expected_width - y.size(3)
+            y = F.pad(y, (diff // 2, diff - diff // 2, 0, 0))
         y = self.BRelu(y)
-        y = y.reshape(y.shape[0], -1)
         return y
