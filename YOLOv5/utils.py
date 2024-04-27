@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import cv2
 import os
+from yolov5 import YOLOv5
 
 model = YOLOv5('yolov5x.pt')
 
