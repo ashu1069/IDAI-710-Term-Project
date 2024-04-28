@@ -10,7 +10,7 @@ from PIL import Image
 root_dir = '/home/stu12/s11/ak1825/idai710/Project/'
 
 transform = transforms.Compose([
-    transforms.Resize((480, 640),interpolation=Image.ANTIALIAS),
+    transforms.Resize((480, 640),interpolation=Image.Resampling.LANCZOS),
     transforms.ToTensor(),  # Converts PIL.Image (H x W x C) in the range [0, 255] to torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
     # Add additional transformations here if needed
 ])
@@ -31,7 +31,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)  # you can adjust the learning rate
 
 # Define the number of epochs
-num_epochs = 10  # you can adjust the number of epochs
+num_epochs = 15  # you can adjust the number of epochs
 
 # Training function
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs):
@@ -81,4 +81,4 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
 # Train the model
 train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs)
 
-torch.save(model, 'aodnet.pth')
+torch.save(model, '/home/stu12/s11/ak1825/idai710/Project/Dehazed-Detection/AOD-Net/aodnet.pth')
