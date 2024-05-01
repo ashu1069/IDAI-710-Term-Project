@@ -43,7 +43,7 @@ class DehazingDataset(Dataset):
         else:
             print(f"Warning: Bounding box file not found for {img_name}")
 
-        sample = {'original_image': original_image, 'foggy_image': foggy_image, 'bboxes': bboxes}
+        sample = {'original_image': original_image, 'foggy_image': foggy_image, 'bboxes': bboxes, 'filename': img_name}
 
         if self.transform:
             sample['original_image'] = self.transform(sample['original_image'])
