@@ -20,7 +20,7 @@ original_dir = '/home/stu12/s11/ak1825/idai710/Project/original_images'
 foggy_dir = '/home/stu12/s11/ak1825/idai710/Project/foggyX_images'
 bb_dir = '/home/stu12/s11/ak1825/idai710/Project/BB'
 
-save_dir = '/home/stu12/s11/ak1825/idai710/Project/Dehazed_Images'
+save_dir = '/home/stu12/s11/ak1825/idai710/Project/RTTS_dehazed'
 os.makedirs(save_dir, exist_ok=True) 
 
 transform = transforms.Compose([
