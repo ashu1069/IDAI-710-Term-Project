@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-
+# test file for RESIDE- RTTS dataset
 class DehazingDataset(Dataset):
     def __init__(self, foggy_dir, bb_dir, transform=None):
         """
