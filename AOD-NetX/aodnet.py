@@ -7,12 +7,16 @@ class SpatialAttentionLayer(nn.Module):
     def __init__(self, kernel_size=7):
         super(SpatialAttentionLayer, self).__init__()
         assert kernel_size % 2 == 1, "Kernel size must be odd for 'same' padding"
+        #a conv layer
         self.conv1 = nn.Conv2d(1, 1, kernel_size, padding=(kernel_size // 2), bias=False)
+        #sigmoid, not softmax because bounding boxes has independent importance and softmax would make the sum of probabilities to 1
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x, boxes):
         mask = torch.zeros_like(x[:, 0:1, :, :])  # Create a single-channel mask
         batch_size, _, height, width = x.shape
+
+        #build masks using bounding box annotations
         for i in range(len(boxes)):
             for box in boxes[i]:
                 if len(box) == 6:
@@ -23,6 +27,7 @@ class SpatialAttentionLayer(nn.Module):
                     y2 = int((y_center + h / 2) * height)
                     mask[i, :, y1:y2, x1:x2] = 1
 
+        #apply sigmoid to attention layer to map into a probability space from 0 to 1 for each bounding box
         attention = self.sigmoid(self.conv1(mask))
         return attention
 
@@ -33,7 +38,7 @@ class DehazeNetAttention(nn.Module):
         super(DehazeNetAttention, self).__init__()
         self.relu = nn.ReLU(inplace=True)
 
-        # Basic convolutional layers
+        # nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
         self.e_conv1 = nn.Conv2d(3, 3, 1, 1, 0, bias=True)
         self.e_conv2 = nn.Conv2d(3, 3, 3, 1, 1, bias=True)
         self.e_conv3 = nn.Conv2d(6, 3, 5, 1, 2, bias=True)

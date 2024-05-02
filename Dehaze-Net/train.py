@@ -14,16 +14,16 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalization parameters typical for pretrained models
 ])
 
+#train dataloader
 train_dataset = DehazingDataset(root_dir=root_dir, subset='train', transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=5, shuffle=True)
 
+#val datalaoder
 val_dataset = DehazingDataset(root_dir=root_dir, subset='val', transform=transform)
 val_loader = DataLoader(val_dataset, batch_size=5, shuffle=False)
 
-# Define the device to run the model on
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Initialize the model, loss criterion, and optimizer
 model = DehazeNet().to(device)
 
 criterion = nn.MSELoss()
@@ -59,7 +59,7 @@ for epoch in range(num_epochs):
         running_loss += loss.item() * inputs.size(0)
 
     epoch_loss = running_loss / len(train_loader.dataset)
-    train_losses.append(epoch_loss)  # Store the epoch training loss
+    train_losses.append(epoch_loss) 
     print(f'Epoch: {epoch+1}/{num_epochs}, Train Loss: {epoch_loss:.4f}')
 
     # Validation phase

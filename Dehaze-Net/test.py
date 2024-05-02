@@ -52,7 +52,7 @@ with torch.no_grad():
         batch_ssim = np.mean([
             ssim(out, orig)
             for out, orig in zip(outputs_np, original_images_np)
-            if out.shape == orig.shape  # Ensure dimensions match
+            if out.shape == orig.shape 
         ])
 
         running_loss += loss.item() * original_images.size(0)

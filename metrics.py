@@ -9,27 +9,27 @@ def parse_annotation_file(file_path):
         for line in file:
             parts = line.split()
             class_label = parts[0]
-            # Clean and try converting the confidence string to float
+
+            #string to float value, from the annotatioin file
             try:
                 confidence = parts[-1].strip(')').strip('tensor(').strip(',').strip('device=\'cuda:0\'')
                 confidence = float(confidence)
                 if np.isnan(confidence):  # Replace nan with 0.0 or another default value
-                    confidence = 0.0  # Adjust this default value as needed
+                    confidence = 0.0  # Assigning confidence to zero in case of nan values
             except ValueError:
                 confidence = 0.0  # Assign a default value in case of conversion failure
             detections.append((class_label, confidence))
     return detections
 
-
-
-
 # Function to calculate average precision for one class
 def calculate_average_precision(confidences, threshold=0.5):
     sorted_confidences = sorted(confidences, reverse=True)
     if not sorted_confidences:
-        return 0.0  # Return 0.0 AP if there are no confidences to evaluate
+        return 0.0  # Return 0.0 AP if no confidence to evaluate
 
+    # for confidence score greater than 0.5, it's a true positive
     tp = np.array([1 if conf >= threshold else 0 for conf in sorted_confidences])
+     # else, false positive
     fp = np.array([1 if conf < threshold else 0 for conf in sorted_confidences])
     tp_cumsum = np.cumsum(tp)
     fp_cumsum = np.cumsum(fp)

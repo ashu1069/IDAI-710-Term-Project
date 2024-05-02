@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from pathlib import Path
 
-# Assuming YOLOv5 is installed and importable
+# Assuming YOLOv5 is installed and importable in the same directory
 from models.common import DetectMultiBackend
 from utils.dataloaders import LoadImages
 from utils.general import non_max_suppression, scale_boxes
@@ -14,11 +14,15 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = DetectMultiBackend('/home/stu12/s11/ak1825/idai710/Project/yolov5x.pt', device=device)
 model.eval()
 
+#directory to store bounding box annotations
 bbox_dir = '/home/stu12/s11/ak1825/idai710/Project/Unet_final/Annotations'
+
+#directory to store annotated images
 annotated_dir = '/home/stu12/s11/ak1825/idai710/Project/Unet_final/labeled_images'
 Path(bbox_dir).mkdir(parents=True, exist_ok=True)
 Path(annotated_dir).mkdir(parents=True, exist_ok=True)
 
+#image directory for which you want to create BB and annotated images
 image_dir = '/home/stu12/s11/ak1825/idai710/Project/Unet_dehazed'
 
 def process_and_save_images(image_dir):
@@ -33,7 +37,6 @@ def process_and_save_images(image_dir):
         pred = model(img, augment=False, visualize=False)
         pred = non_max_suppression(pred, 0.25, 0.45, None, False, max_det=1000)
 
-        # Process detections
         for i, det in enumerate(pred):  # detections per image
             p, im0 = Path(path), im0s.copy()
 

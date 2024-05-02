@@ -15,18 +15,21 @@ class DehazeNet(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=7, stride=1, padding=3)
         self.conv5 = nn.Conv2d(in_channels=48, out_channels=1, kernel_size=6, padding=2)
 
+        # Used ChatGPT to solve this bug in the output channel while implementing the paper
         for name, m in self.named_modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.normal_(m.weight, mean=0, std=0.001)
                 if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
 
+    #local extremum
     def Maxout(self, x, groups):
         x = x.reshape(x.shape[0], groups, x.shape[1]//groups, x.shape[2], x.shape[3])
         x, _ = torch.max(x, dim=2, keepdim=True)
         out = x.reshape(x.shape[0], -1, x.shape[3], x.shape[4])
         return out
 
+    #a bounded relu function suggested in the original paper
     def BRelu(self, x):
         zeros = torch.zeros_like(x)
         ones = torch.ones_like(x)

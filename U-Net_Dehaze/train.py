@@ -21,16 +21,14 @@ train_loader = DataLoader(train_dataset, batch_size=5, shuffle=True)
 val_dataset = DehazingDataset(root_dir=root_dir, subset='val', transform=transform)
 val_loader = DataLoader(val_dataset, batch_size=5, shuffle=False)
 
-# Define the device to run the model on
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 model = UNet(n_channels=3, n_classes=3).to(device)
 
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)  # you can adjust the learning rate
+optimizer = optim.Adam(model.parameters(), lr=0.001) 
 
-# Define the number of epochs
-num_epochs = 10  # you can adjust the number of epochs
+num_epochs = 10 
 
 # Initialize lists to store losses
 train_losses = []
