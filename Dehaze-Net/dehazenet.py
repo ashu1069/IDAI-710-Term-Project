@@ -13,7 +13,7 @@ class DehazeNet(nn.Module):
         self.conv4 = nn.Conv2d(in_channels=4, out_channels=self.input, kernel_size=7, padding=3)
         
         self.maxpool = nn.MaxPool2d(kernel_size=7, stride=1, padding=3)
-        self.conv5 = nn.Conv2d(in_channels=48, out_channels=3, kernel_size=6, padding=2)
+        self.conv5 = nn.Conv2d(in_channels=48, out_channels=1, kernel_size=6, padding=2)
 
         for name, m in self.named_modules():
             if isinstance(m, nn.Conv2d):
