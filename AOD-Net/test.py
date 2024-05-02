@@ -4,7 +4,7 @@ import torch.nn as nn
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from dataloader import DehazingDataset
-from nnet import dehaze_net  # Ensure this is your actual model's file and class name
+from nnet import dehaze_net  
 from utils import ssim
 import numpy as np
 from torchvision.utils import save_image
@@ -24,7 +24,6 @@ transform = transforms.Compose([
 test_dataset = DehazingDataset(root_dir=root_dir, transform=transform)
 test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=4)
 
-# Device Configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Model Loading
@@ -53,6 +52,7 @@ with torch.no_grad():
         outputs_np = outputs.permute(0, 2, 3, 1).cpu().numpy()
         original_images_np = original_images.permute(0, 2, 3, 1).cpu().numpy()
 
+        #calculating batch ssim score
         batch_ssim = np.mean([ssim(out, orig) for out, orig in zip(outputs_np, original_images_np)])
 
         running_loss += loss.item() * original_images.size(0)

@@ -11,8 +11,7 @@ root_dir = '/home/stu12/s11/ak1825/idai710/Project/'
 
 transform = transforms.Compose([
     transforms.Resize((480, 640),interpolation=Image.Resampling.LANCZOS),
-    transforms.ToTensor(),  # Converts PIL.Image (H x W x C) in the range [0, 255] to torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
-    # Add additional transformations here if needed
+    transforms.ToTensor()
 ])
 
 train_dataset = DehazingDataset(root_dir=root_dir, subset='train', transform=transform)
@@ -21,19 +20,21 @@ train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
 val_dataset = DehazingDataset(root_dir=root_dir, subset='val', transform=transform)
 val_loader = DataLoader(val_dataset, batch_size=2, shuffle=False)
 
-# Define the device to run the model on
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Initialize the model, loss criterion, and optimizer
+# Model
 model = dehaze_net().to(device)
 
+# Loss Function
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)  # you can adjust the learning rate
 
-# Define the number of epochs
-num_epochs = 15  # you can adjust the number of epochs
+# Optimizer
+optimizer = optim.Adam(model.parameters(), lr=0.001) 
 
-# Training function
+# number of epochs
+num_epochs = 15 
+
+# Training loop
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs):
     for epoch in range(num_epochs):
         model.train()  # set model to training mode
